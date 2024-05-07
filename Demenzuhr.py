@@ -103,8 +103,8 @@ class AnalogUhr(tk.Canvas):
         y = center_y + minute_hand_length * math.sin(minute_angle)
         self.create_line(center_x, center_y, x, y, width=2, tag="minute_hand", fill="black")
 
-        # Stundenzeiger
-        hour_angle = math.radians(30 * (now.hour % 12) - 90)  # 12-Stunden-Format
+        # Stundenzeiger (berücksichtigt auch die Minuten)
+        hour_angle = math.radians(30 * (now.hour % 12) + 0.5 * now.minute - 90)  # Stündlicher Anteil + Anteil der Minuten
         hour_hand_length = radius * 0.5
         x = center_x + hour_hand_length * math.cos(hour_angle)
         y = center_y + hour_hand_length * math.sin(hour_angle)
