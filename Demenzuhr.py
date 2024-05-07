@@ -74,14 +74,23 @@ class AnalogUhr(tk.Canvas):
 
         self.create_oval(center_x - radius, center_y - radius, center_x + radius, center_y + radius, width=4)
 
-        for i in range(12):
-            angle = math.radians(360 * i / 12 - 90)  # Umrechnung in Bogenmaß, Start bei 12 Uhr (-90 Grad)
-            length_ratio = 0.85  # Länge der Stundenmarkierungen
-            x = center_x + radius * length_ratio * math.cos(angle)
-            y = center_y + radius * length_ratio * math.sin(angle)
+        for i in range(60):
+            angle = math.radians(360 * i / 60 - 90)  # Umrechnung in Bogenmaß, Start bei 12 Uhr (-90 Grad)
+            length_ratio = 0.85 if i % 5 == 0 else 0.9  # Länge der Stunden- und Minutenmarkierungen
+            x1 = center_x + radius * length_ratio * math.cos(angle)
+            y1 = center_y + radius * length_ratio * math.sin(angle)
+            x2 = center_x + radius * math.cos(angle)
+            y2 = center_y + radius * math.sin(angle)
 
-            # Zahl an der Stelle der Stundenmarkierung
-            self.create_text(x, y, text=str((i + 11) % 12 + 1), font=("Helvetica", 12, "bold"))
+            if i % 5 == 0:
+                # Stundenmarkierungen mit Zahlen
+                hour_number = (i // 5 + 11) % 12 + 1
+                text_x = center_x + (radius * 0.75) * math.cos(angle)  # Text etwas näher zur Mitte
+                text_y = center_y + (radius * 0.75) * math.sin(angle)  # Text etwas näher zur Mitte
+                self.create_text(text_x, text_y, text=str(hour_number), font=("Helvetica", 12, "bold"))
+
+            # Minutenmarkierungen
+            self.create_line(x1, y1, x2, y2, width=1)
 
     def update(self, now):
         center_x, center_y = self.size / 2, self.size / 2
