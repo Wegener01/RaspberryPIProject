@@ -7,7 +7,7 @@ class Demenzuhr(tk.Tk):
         super().__init__(master)
 
         self.title("Demenzuhr")
-        self.geometry("800x480")  # Größe anpassen je nach Display-Auflösung
+        self.geometry("1024x600")  # Größe anpassen je nach Display-Auflösung
 
         self.analog_uhr = AnalogUhr(self)
         self.analog_uhr.pack(pady=20)
@@ -17,6 +17,9 @@ class Demenzuhr(tk.Tk):
 
         self.tag_zeit = tk.Label(self, text="", font=("Helvetica", 24))
         self.tag_zeit.pack()
+
+        self.datum_anzeige = tk.Label(self, text="", font=("Helvetica", 24))
+        self.datum_anzeige.pack(pady=20, padx=20, side=tk.TOP)  # Unterhalb der digitalen Uhr platzieren
 
         self.update_time()
 
@@ -29,6 +32,10 @@ class Demenzuhr(tk.Tk):
         # Digitale Uhr aktualisieren
         digital_time = now.strftime("%H:%M:%S")
         self.digital_uhr.config(text=digital_time)
+
+        # Datumsanzeige aktualisieren
+        formatted_date = self.translate_date(now.strftime("%d. %B %Y"))  # Datumsformat: z.B. "7. Mai 2024"
+        self.datum_anzeige.config(text=formatted_date)
 
         # Tageszeit und Wochentag
         day_of_week = now.strftime("%A")  # Wochentag in Englisch
@@ -50,6 +57,34 @@ class Demenzuhr(tk.Tk):
             "Sunday": "Sonntag"
         }
         return days_dict.get(english_day, english_day)  # Rückgabe des übersetzten Tages oder Original
+    
+    def translate_date(self, english_date):
+        # Übersetzung der Monatsnamen
+        months_dict = {
+            "January": "Januar",
+            "February": "Februar",
+            "March": "März",
+            "April": "April",
+            "May": "Mai",
+            "June": "Juni",
+            "July": "Juli",
+            "August": "August",
+            "September": "September",
+            "October": "Oktober",
+            "November": "November",
+            "December": "Dezember"
+        }
+        
+        # Datumsstring vorbereiten
+        cleaned_date = english_date.strip()  # Leerzeichen entfernen
+        parts = cleaned_date.split()
+        day = parts[0].lstrip("0")  # Führende Nullen vom Tag entfernen
+        translated_month = months_dict.get(parts[1], parts[1])  # Übersetzen des Monatsnamens
+        year = parts[2]  # Jahr unverändert übernehmen
+
+        return f"{day} {translated_month} {year}"  # Formatieren des Datums
+
+
 
     def get_part_of_day(self, hour):
         if 6 <= hour < 12:
