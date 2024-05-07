@@ -21,6 +21,20 @@ class Demenzuhr(tk.Tk):
         self.datum_anzeige = tk.Label(self, text="", font=("Helvetica", 24))
         self.datum_anzeige.pack(pady=20, padx=20, side=tk.TOP)  # Unterhalb der digitalen Uhr platzieren
 
+        # Bedienelemente für den Seitenwechsel
+        self.left_arrow = tk.Label(self, text="<", font=("Helvetica", 72), fg="black")
+        self.left_arrow.place(relx=0.1, rely=0.5, anchor="center")
+
+        self.right_arrow = tk.Label(self, text=">", font=("Helvetica", 72), fg="black")
+        self.right_arrow.place(relx=0.9, rely=0.5, anchor="center")
+
+        # Event-Handler für Bedienelemente
+        self.left_arrow.bind("<Button-1>", self.show_medikamentenplan)
+        self.right_arrow.bind("<Button-1>", self.show_wetter)
+
+        self.show_demenzuhr()  # Standardanzeige: Demenzuhr
+        self.update_time()  # Start der Uhraktualisierung
+
         self.update_time()
 
     def update_time(self):
@@ -44,6 +58,18 @@ class Demenzuhr(tk.Tk):
         self.tag_zeit.config(text=f"{german_day_of_week} {part_of_day}")
 
         self.after(1000, self.update_time)  # Alle 1000ms (1 Sekunde) aktualisieren
+
+    def show_demenzuhr(self):
+        # Hier können Sie die Demenzuhr-Ansicht anzeigen
+        pass
+
+    def show_wetter(self, event):
+        # Hier wird zur Wetteransicht gewechselt
+        pass
+
+    def show_medikamentenplan(self, event):
+        # Hier wird zum Medikamentenplan gewechselt
+        pass
 
     def translate_day(self, english_day):
         # Übersetzung der Wochentage
