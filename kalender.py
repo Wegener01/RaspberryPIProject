@@ -7,10 +7,10 @@ import locale
 locale.setlocale(locale.LC_TIME, "de_DE")
 
 
-def load_termine(filename):
+def load_termine(filepath):
     termine = []
     try:
-        with open(filename, 'r') as file:
+        with open(filepath, 'r') as file:
             for line in file:
                 parts = line.strip().split()
                 if len(parts) == 4:
@@ -20,7 +20,7 @@ def load_termine(filename):
                     year = int(parts[3])
                     termine.append((name, day, month, year))
     except FileNotFoundError:
-        print(f"Datei '{filename}' nicht gefunden. Neue leere Datei wird erstellt.")
+        print(f"Datei '{filepath}' nicht gefunden. Neue leere Datei wird erstellt.")
     return termine
 
 
@@ -29,7 +29,7 @@ def add_termine():
     date_str = simpledialog.askstring("Neuer termin", "Geburtsdatum eingeben (Format: DD-MM-YYYY):")
     try:
         day, month, year = map(int, date_str.split("-"))
-        with open("birthdays.txt", "a") as file:
+        with open("appointments.txt", "a") as file:
             file.write(f"{name} {day} {month} {year}\n")
         show_date()
     except ValueError as e:
@@ -39,9 +39,9 @@ def add_termine():
 def show_date():
     now = datetime.now()
     day = now.strftime("%A")
-    date = now.strftime("%d-%m-%Y")
-    result_label.config(text=f"Heute ist {day}, {date}")
-    show_next_appointment(now, "birthdays.txt", next_label)
+    date = now.strftime("%d %m %Y")
+    result_label.config(text=f" {day},\n {date}")
+    show_next_appointment(now, "appointments.txt", next_label)
 
 
 def show_next_appointment(now, filename, next_label):
@@ -57,7 +57,7 @@ def show_next_appointment(now, filename, next_label):
                 next_termin = termin
 
     if next_termin:
-        next_date = next_termin.strftime("%A, %d-%m-%Y")
+        next_date = next_termin.strftime("%A, %d %m %Y")
         next_label.config(text=f"Nächster Termin: {next_date}")
     else:
         next_label.config(text="Keine weiteren Termine gefunden")
@@ -75,16 +75,29 @@ result_label.pack(pady=10)
 next_label = tk.Label(root, font=("Helvetica", 12))
 next_label.pack(pady=10)
 
-# Button zum Hinzufügen eines neuen Geburtstags
-add_button = tk.Button(root, text="Neuen Termin hinzufügen", command=add_termine)
+
+# Button zum Auswählen der Termin-Datei
+#file_dialog_button = tk.Button(root, text="Datei auswählen", command=lambda: select_file(load_termine))
+#file_dialog_button.pack(pady=10)
+
+# Button zum Hinzufügen eines neuen Termins
+add_button = tk.Button(root, text="Neuer Termin hinzufügen", command=add_termine)
 add_button.pack(pady=10)
 
+
 # Button zum Aktualisieren des Datums und des nächsten Geburtstags erstellen
-update_button = tk.Button(root, text="Aktualisieren", command=show_date)
-update_button.pack(pady=10)
+#update_button = tk.Button(root, text="Aktualisieren", command=show_date)
+#update_button.pack(pady=10)
 
 # Aktuelles Datum und nächsten Geburtstag anzeigen
 show_date()
 
+# Datei auswählen Funktion
+def select_file(callback):
+    filepath = tk.filedialog.askopenfilename(title="appointments.txt")
+    if filepath:
+        callback(filepath)
+
 # GUI starten
 root.mainloop()
+
